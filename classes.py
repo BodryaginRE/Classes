@@ -1,3 +1,7 @@
+def calculate_average_grade_for_all_courses():
+    total_sum = 0
+
+
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
@@ -14,10 +18,13 @@ class Student:
             self.grades[course] = [grade]
 
     def get_average_grade(self, course):
-        if course in self.grades:
-            return sum(self.grades[course]) / len(self.grades[course])
-        else:
-            return 0
+        sum_ = 0
+        len_ = 0
+        for mark in self.grades.values():
+            sum_ += sum(mark)
+            len_ += len(mark)
+            res = round(sum_ / len_, 2)
+        return res
 
     def assign_grade(self, lecturer, grade):
         lecturer.set_grade(self.name, grade)
@@ -35,6 +42,13 @@ class Mentor:
         self.surname = surname
         self.courses_attached = []
 
+
+class Lecturer(Mentor):
+    def __init__(self, name, surname, course):
+        super().__init__(name, surname)
+        self.course = course
+        self.grades = []
+
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
             if course in student.grades:
@@ -43,13 +57,6 @@ class Mentor:
                 student.grades[course] = [grade]
         else:
             return 'Ошибка'
-
-
-class Lecturer(Mentor):
-    def __init__(self, name, surname, course):
-        super().__init__(name, surname)
-        self.course = course
-        self.grades = []
 
     def set_grade(self, student, grade):
         self.grades.append((student, grade))
@@ -90,9 +97,9 @@ class Reviewer(Mentor):
 
 
 best_student = Student('Ruoy', 'Eman', 'your_gender')
-best_student.courses_in_progress += ['Python']
+best_student.courses_in_progress += ['Python', 'Git', 'Java']
 
-cool_mentor = Mentor('Some', 'Buddy')
+cool_mentor = Lecturer('Some', 'Buddy', course='Git')
 cool_mentor.courses_attached += ['Python']
 
 cool_mentor.rate_hw(best_student, 'Python', 10)
